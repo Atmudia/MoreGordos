@@ -15,41 +15,29 @@ namespace MoreGordos
 		// Token: 0x060000AE RID: 174 RVA: 0x00005FE0 File Offset: 0x000041E0
 		public static void Prefix()
 		{
-			bool flag = Levels.isSpecial();
-			if (!flag)
+			if (!Levels.isSpecial())
 			{ 
 				Material material = null;
 				foreach (string text in GordoLocations)
 				{
 					EchoNoteGordoModel echoNoteGordoModel =
 						SRSingleton<SceneContext>.Instance.GameModel.GetEchoNoteGordoModel(text);
-					bool flag2 = echoNoteGordoModel == null;
-					if (flag2)
-					{
-						Base.Log("Failed to active EchoNoteGordo. id: " + text, Base.LogType.ERROR, false);
-					}
-					else
+					if (echoNoteGordoModel != null)
 					{
 						GameObject privateField = echoNoteGordoModel.GetPrivateField<GameObject>("gameObject");
-						bool flag3 = !material;
-						if (flag3)
+						if (!material) 
 						{
 							foreach (EchoNoteGordoModel.Participant participant in privateField
 								.GetComponentsInChildren<EchoNoteGordoModel.Participant>(true))
 							{
 								EchoNoteGordo echoNoteGordo = (EchoNoteGordo) participant;
-								bool flag4 = echoNoteGordo.gordo;
-								if (flag4)
+								if (echoNoteGordo.gordo)
 								{
-									bool flag7 = !material;
-									if (flag7)
+									if (!material)
 									{
 										SkinnedMeshRenderer componentInChildren = echoNoteGordo.gordo.gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
-										bool flag8 = componentInChildren && componentInChildren.sharedMaterial;
-										if (flag8)
-										{
+										if (componentInChildren && componentInChildren.sharedMaterial)
 											material = componentInChildren.sharedMaterial;
-										}
 									}
 								}
 							}

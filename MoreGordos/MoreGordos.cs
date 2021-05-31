@@ -39,9 +39,9 @@ namespace MoreGordos
             Material CoinMaterial = LuckySlime.AppearancesDefault[0].Structures[2].DefaultMaterials[0];
             GameObject ears = Prefab.transform.Find("Vibrating/ears_n_tail_LOD0").gameObject;
             GameObject tangleflower = Prefab.transform.Find("Vibrating/bone_root/bone_slime/bone_core/bone_jiggle_top/bone_skin_top/Flower").gameObject;
-            GameObject luckycoin = Prefab.transform.Find("Vibrating/bone_root/bone_slime/luckycat_coin_LOD1").gameObject; 
-            ears.SetActive(true); 
-            tangleflower.SetActive(false); 
+            GameObject luckycoin = Prefab.transform.Find("Vibrating/bone_root/bone_slime/luckycat_coin_LOD1").gameObject;
+            ears.SetActive(true);
+            tangleflower.SetActive(false);
             luckycoin.SetActive(true);
 
             MeshFilter luckycoinchanger = luckycoin.GetComponent<MeshFilter>();//
@@ -55,7 +55,7 @@ namespace MoreGordos
 
             SkinnedMeshRenderer earschanger = ears.GetComponent<SkinnedMeshRenderer>();
             earschanger.sharedMaterial = ModelMat;
-            
+
             //Mouth
             GameObject PrefabTabby = PrefabUtils.CopyPrefab(GameContext.Instance.LookupDirector?.GetGordo(Identifiable.Id.TABBY_GORDO));
             GordoFaceComponents faceTabby = PrefabTabby.GetComponent<GordoFaceComponents>();
@@ -72,7 +72,7 @@ namespace MoreGordos
             GordoDisplayOnMap disp = Prefab.GetComponent<GordoDisplayOnMap>();
             GameObject markerPrefab = PrefabUtils.CopyPrefab(disp.markerPrefab.gameObject);
             markerPrefab.name = "GordoLuckyMarker";
-            markerPrefab.GetComponent<Image>().sprite = Main.assetBundle.LoadAsset<Sprite>("icon_lucky_gordo");;
+            markerPrefab.GetComponent<Image>().sprite = Main.assetBundle.LoadAsset<Sprite>("icon_lucky_gordo"); ;
             disp.markerPrefab = markerPrefab.GetComponent<MapMarker>();
             //Ids
             GordoIdentifiable iden = Prefab.GetComponent<GordoIdentifiable>();
@@ -80,7 +80,7 @@ namespace MoreGordos
             iden.nativeZones = EnumUtils.GetAll<ZoneDirector.Zone>();
             //Appearance & diet
             GordoEat eat = Prefab.GetComponent<GordoEat>();
-            SlimeDefinition oldDefinition = (SlimeDefinition) PrefabUtils.DeepCopyObject(eat.slimeDefinition);
+            SlimeDefinition oldDefinition = (SlimeDefinition)PrefabUtils.DeepCopyObject(eat.slimeDefinition);
             oldDefinition.AppearancesDefault = baseSlimeDef.AppearancesDefault;
             oldDefinition.Diet = baseSlimeDef.Diet;
             oldDefinition.IdentifiableId = GordoId;
@@ -96,7 +96,7 @@ namespace MoreGordos
                 prefab,
                 prefab
             };
-            
+
             GordoRewards rew = Prefab.GetComponent<GordoRewards>();
             rew.rewardPrefabs = rews.ToArray();
             rew.slimePrefab = GameContext.Instance.LookupDirector.GetPrefab(Identifiable.Id.LUCKY_SLIME);
@@ -699,6 +699,195 @@ namespace MoreGordos
             render.material = ModelMatColor;
             render.materials[0] = ModelMatColor;
             LookupRegistry.RegisterGordo(Prefab);
+        }
+    }
+}
+
+namespace MoreGordos
+{
+    class Tarr_Gordo
+    {
+
+        public static void CreateGordo(Identifiable.Id GordoId)
+        {
+            // Get GameObjects
+            GameObject Prefab = PrefabUtils.CopyPrefab(GameContext.Instance.LookupDirector?.GetGordo(Identifiable.Id.PINK_GORDO));
+            Prefab.name = "gordoTarr";
+
+            GameObject baseSlime = GameContext.Instance.LookupDirector?.GetPrefab(Identifiable.Id.TARR_SLIME);
+            SlimeDefinition baseSlimeDef = SRSingleton<GameContext>.Instance.SlimeDefinitions.GetSlimeByIdentifiableId(Identifiable.Id.TARR_SLIME);
+            SlimeAppearance baseSlimeAppearance = baseSlimeDef.AppearancesDefault[0];
+            // Load Material
+            Material ModelMat = baseSlimeAppearance.Structures[1].DefaultMaterials[0];
+            SlimeEyeComponents baseSlimeEyes = baseSlime.GetComponent<SlimeEyeComponents>();
+            SlimeMouthComponents baseSlimeMouth = baseSlime.GetComponent<SlimeMouthComponents>();
+
+            // Load Components
+            GordoEat eat = Prefab.GetComponent<GordoEat>();
+
+            Material TarrEyeRavenous = baseSlimeEyes.chompClosedEyes;
+            Material TarrMouthRavenous = baseSlimeMouth.chompClosedMouth;
+            Material TarrEyeMellow = UnityEngine.Object.Instantiate<Material>(baseSlimeEyes.chompClosedEyes);
+            TarrEyeMellow.name = "eyeMellow";
+            TarrEyeMellow.SetTexture("_FaceTexture", Main.tarrEyeTexture);
+            Material TarrMouthMellow = UnityEngine.Object.Instantiate<Material>(baseSlimeMouth.chompClosedMouth);
+            TarrMouthMellow.name = "mouthMellow";
+            TarrMouthMellow.SetTexture("_FaceTexture", Main.tarrMouthTexture);
+
+            GordoFaceComponents face = Prefab.GetComponent<GordoFaceComponents>();
+            face.blinkEyes = TarrEyeRavenous;//eyeBlink
+            face.strainEyes = TarrEyeMellow;//eyeScared
+            face.chompOpenMouth = TarrMouthRavenous;//mouthElated
+            face.happyMouth = TarrMouthRavenous;//mouthHappy
+            face.strainMouth = TarrMouthMellow;//mouthStuffed
+
+            GordoDisplayOnMap disp = Prefab.GetComponent<GordoDisplayOnMap>();
+            GameObject markerPrefab = PrefabUtils.CopyPrefab(disp.markerPrefab.gameObject);
+            markerPrefab.name = "GordoTarrMarker";
+            markerPrefab.GetComponent<Image>().sprite = Main.tarrGordoIcon;
+            disp.markerPrefab = markerPrefab.GetComponent<MapMarker>();
+            GordoIdentifiable iden = Prefab.GetComponent<GordoIdentifiable>();
+            iden.id = GordoId;
+            iden.nativeZones = EnumUtils.GetAll<ZoneDirector.Zone>();
+
+            GameObject child = Prefab.transform.Find("Vibrating/slime_gordo").gameObject;
+            SkinnedMeshRenderer render = child.GetComponent<SkinnedMeshRenderer>();
+
+            SlimeDefinition oldDefinition = (SlimeDefinition)PrefabUtils.DeepCopyObject(eat.slimeDefinition);
+            SlimeDefinition newDefinition = (SlimeDefinition)PrefabUtils.DeepCopyObject(baseSlimeDef);
+            oldDefinition.AppearancesDefault = newDefinition.AppearancesDefault;
+            oldDefinition.Diet = newDefinition.Diet;
+            oldDefinition.IdentifiableId = GordoId;
+            oldDefinition.name = "Tarr Gordo";
+            eat.slimeDefinition = oldDefinition;
+            eat.targetCount = 50;
+
+            List<BreakOnImpact.SpawnOption> tarrSpawnOptions = new List<BreakOnImpact.SpawnOption>
+            {
+                new BreakOnImpact.SpawnOption
+                {
+                    spawn = SRSingleton<GameContext>.Instance.LookupDirector.GetPrefab(Identifiable.Id.PRIMORDY_OIL_CRAFT),
+                    weight = 9,
+                },
+                new BreakOnImpact.SpawnOption
+                {
+                    spawn = SRSingleton<GameContext>.Instance.LookupDirector.GetPrefab(Identifiable.Id.DEEP_BRINE_CRAFT),
+                    weight = 9,
+                },
+                new BreakOnImpact.SpawnOption
+                {
+                    spawn = SRSingleton<GameContext>.Instance.LookupDirector.GetPrefab(Identifiable.Id.ROOSTER),
+                    weight = 3,
+                },
+                new BreakOnImpact.SpawnOption
+                {
+                    spawn = SRSingleton<GameContext>.Instance.LookupDirector.GetPrefab(Identifiable.Id.HEN),
+                    weight = 3,
+                },
+                new BreakOnImpact.SpawnOption
+                {
+                    spawn = SRSingleton<GameContext>.Instance.LookupDirector.GetPrefab(Identifiable.Id.PHOSPHOR_ROCK_LARGO),
+                    weight = 0.3f,
+                },
+                new BreakOnImpact.SpawnOption
+                {
+                    spawn = SRSingleton<GameContext>.Instance.LookupDirector.GetPrefab(Identifiable.Id.PINK_TABBY_LARGO),
+                    weight = 0.3f,
+                },
+                new BreakOnImpact.SpawnOption
+                {
+                    spawn = SRSingleton<GameContext>.Instance.LookupDirector.GetPrefab(Identifiable.Id.BOOM_RAD_LARGO),
+                    weight = 0.3f,
+                },
+                new BreakOnImpact.SpawnOption
+                {
+                    spawn = SRSingleton<GameContext>.Instance.LookupDirector.GetPrefab(Identifiable.Id.QUANTUM_CRYSTAL_LARGO),
+                    weight = 0.3f,
+                },
+                new BreakOnImpact.SpawnOption
+                {
+                    spawn = SRSingleton<GameContext>.Instance.LookupDirector.GetPrefab(Identifiable.Id.HONEY_HUNTER_LARGO),
+                    weight = 0.3f,
+                },
+                new BreakOnImpact.SpawnOption
+                {
+                    spawn = SRSingleton<GameContext>.Instance.LookupDirector.GetPrefab(Identifiable.Id.MOSAIC_DERVISH_LARGO),
+                    weight = 0.3f,
+                },
+                new BreakOnImpact.SpawnOption
+                {
+                    spawn = SRSingleton<GameContext>.Instance.LookupDirector.GetPrefab(Identifiable.Id.SABER_TANGLE_LARGO),
+                    weight = 0.3f,
+                },
+                new BreakOnImpact.SpawnOption
+                {
+                    spawn = SRSingleton<GameContext>.Instance.LookupDirector.GetPrefab(Identifiable.Id.TARR_LANTERN_ORNAMENT),
+                    weight = 0.003f,
+                },
+                new BreakOnImpact.SpawnOption
+                {
+                    spawn = SRSingleton<GameContext>.Instance.LookupDirector.GetPrefab(Identifiable.Id.TARR_ORNAMENT),
+                    weight = 0.003f,
+                },
+            };
+            GameObject prefab = PrefabUtils.CopyPrefab(SRSingleton<GameContext>.Instance.LookupDirector.GetPrefab(Identifiable.Id.CRATE_WILDS_01));
+            prefab.name = "crateTarr";
+            prefab.GetComponent<BreakOnImpact>().spawnOptions = tarrSpawnOptions;
+            prefab.GetComponent<BreakOnImpact>().minSpawns = 4;
+            prefab.GetComponent<BreakOnImpact>().maxSpawns = 6;
+            Dictionary<BreakOnImpact.SpawnOption, float> spawnWeights = new Dictionary<BreakOnImpact.SpawnOption, float>();
+            foreach (BreakOnImpact.SpawnOption spawnOption in tarrSpawnOptions)
+                spawnWeights[spawnOption] = spawnOption.weight;
+
+            List<GameObject> rews = new List<GameObject>()
+            {
+                prefab,
+                prefab,
+                prefab
+            };
+
+            GordoRewards rew = Prefab.GetComponent<GordoRewards>();
+            rew.rewardPrefabs = rews.ToArray();
+            rew.slimePrefab = GameContext.Instance.LookupDirector.GetPrefab(Identifiable.Id.TARR_SLIME);
+            rew.rewardOverrides = new GordoRewards.RewardOverride[0];
+
+            render.sharedMaterial = ModelMat;
+            render.sharedMaterials[0] = ModelMat;
+            render.material = ModelMat;
+            render.materials[0] = ModelMat;
+
+            LookupRegistry.RegisterGordo(Prefab);
+
+            FearProfile fearProfile = SRSingleton<GameContext>.Instance.LookupDirector.GetPrefab(Identifiable.Id.PINK_SLIME).GetComponent<FleeThreats>().fearProfile;
+            FearProfile.ThreatEntry tarrFear = fearProfile.threats.FirstOrDefault(threat => threat.id == Identifiable.Id.TARR_SLIME);
+            FearProfile.ThreatEntry threatEntry = new FearProfile.ThreatEntry
+            {
+                id = GordoId,
+                maxSearchRadius = tarrFear.maxSearchRadius,
+                maxThreatFearPerSec = tarrFear.maxThreatFearPerSec,
+                minSearchRadius = tarrFear.minSearchRadius,
+                minThreatFearPerSec = tarrFear.minThreatFearPerSec
+            };
+            fearProfile.threatsLookup.Add(GordoId, threatEntry);
+        }
+
+        public static void PostLoadTarrGordo(Identifiable.Id GordoId)
+        {
+            GameObject Prefab = GameContext.Instance.LookupDirector?.GetGordo(GordoId);
+            GordoEat eat = Prefab.GetComponent<GordoEat>();
+            eat.slimeDefinition.Diet.RefreshEatMap(GameContext.Instance.SlimeDefinitions, eat.slimeDefinition);
+            eat.slimeDefinition.Diet.EatMap.RemoveAll((eatMap => eatMap.eats == Identifiable.Id.PUDDLE_SLIME));
+            eat.slimeDefinition.Diet.EatMap.Add(new SlimeDiet.EatMapEntry()
+            {
+                becomesId = Identifiable.Id.NONE,
+                producesId = Identifiable.Id.TARR_SLIME,
+                driver = SlimeEmotions.Emotion.AGITATION,
+                eats = Identifiable.Id.PUDDLE_SLIME,
+                minDrive = 0,
+                extraDrive = 0,
+                isFavorite = true,
+                favoriteProductionCount = 50,
+            });
         }
     }
 }
