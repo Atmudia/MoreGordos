@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.props" Condition="Exists('packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D4D9A197-CC28-4ADE-9F05-88E4334B6D0F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>More_Gordos</RootNamespace>
+    <AssemblyName>More_Gordos</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+	<LangVersion>preview</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+      <Publicize Include="Assembly-CSharp" IncludeCompilerGeneratedMembers="false" />
+    <Reference Include="0Harmony">
+      <HintPath>/home/ati/.local/share/Steam/steamapps/common/Slime Rancher/SRML\Libs\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>/home/ati/.local/share/Steam/steamapps/common/Slime Rancher/SlimeRancher_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Secret_Style_Things">
+      <HintPath>/home/ati/.local/share/Steam/steamapps/common/Slime Rancher/SRML\Mods\Secret_Style_Things.dll</HintPath>
+    </Reference>
+    <Reference Include="SRML">
+      <HintPath>/home/ati/.local/share/Steam/steamapps/common/Slime Rancher/SlimeRancher_Data\Managed\SRML.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="UnityEngine.AssetBundleModule">
+      <HintPath>/home/ati/.local/share/Steam/steamapps/common/Slime Rancher/SlimeRancher_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>/home/ati/.local/share/Steam/steamapps/common/Slime Rancher/SlimeRancher_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>/home/ati/.local/share/Steam/steamapps/common/Slime Rancher/SlimeRancher_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>/home/ati/.local/share/Steam/steamapps/common/Slime Rancher/SlimeRancher_Data\Managed\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>/home/ati/.local/share/Steam/steamapps/common/Slime Rancher/SlimeRancher_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Gordos\FireGordo.cs" />
+    <Compile Include="Gordos\GlitchGordo.cs" />
+    <Compile Include="Gordos\LuckyGordo.cs" />
+    <Compile Include="Gordos\PuddleGordo.cs" />
+    <Compile Include="Gordos\QuicksilverGordo.cs" />
+    <Compile Include="Gordos\SaberGordo.cs" />
+    <Compile Include="Gordos\TarrGordo.cs" />
+    <Compile Include="Gordos\TwinkleGordo.cs" />
+    <Compile Include="IdentifiableGordo\Ids.cs" />
+    <Compile Include="IdentifiableGordo\OtherId.cs" />
+    <Compile Include="EntryPoint.cs" />
+    <Compile Include="Patch\Patch_GordoEat.cs" />
+    <Compile Include="Patch\Patch_DestroyAndShockOnTouching.cs" />
+    <Compile Include="Patch\Patch_DamagePlayerOnTouch.cs" />
+    <Compile Include="Patch\Patch_GordoSnare.cs" />
+    <Compile Include="Utility\SRObjects.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="modinfo.json" />
+    <EmbeddedResource Include="moregordos" />
+    <EmbeddedResource Include="tarrmellow" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".gitignore" />
+    <Content Include="README.md" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.props'))" />
+    <Error Condition="!Exists('packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets'))" />
+  </Target>
+  <Import Project="packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets" Condition="Exists('packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets')" />
+</Project>

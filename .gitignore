@@ -1,0 +1,9 @@
+/bin
+/obj
+/.idea
+/.vs
+/More_Gordos.sln.DotSettings.user
+/.vs/*
+/packages
+/packages/*
+/packages/Krafs.Publicizer.2.3.0
