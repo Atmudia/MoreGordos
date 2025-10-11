@@ -23,7 +23,7 @@ namespace More_Gordos.Gordos
 			flower.GetComponent<MeshFilter>().sharedMesh = SRObjects.Get<Mesh>("quicksilvercrest");
 			flower.transform.localScale = Vector3.one;
 			flower.GetComponent<MeshRenderer>().sharedMaterial = SRObjects.Get<Material>("slimeQuickSilverBase");
-			flower.transform.localPosition = new Vector3(0f, 0f, 1f);
+			flower.transform.position = new Vector3(0.0f, 0.0f, 1f);
 
 			SlimeDefinition slimeDef = Identifiable.Id.QUICKSILVER_SLIME.GetSlimeDefinition();
 			SlimeAppearance appearance = slimeDef.AppearancesDefault[0];

@@ -1,15 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
+using MonomiPark.SlimeRancher.DataModel;
 using More_Gordos.IdentifiableGordo;
 using SRML;
-using SRML.Console;
-using SRML.Utils;
 using UnityEngine;
 
 namespace More_Gordos.Patch
 {
-
     [HarmonyPatch]
     public static class Patch_GordoSnare
     {
@@ -25,10 +23,16 @@ namespace More_Gordos.Patch
                 return false;
             }
 
+            if (baitTypeId == Identifiable.Id.GLITCH_SLIME)
+            {
+                __result = Ids.GLITCH_TARR_GORDO;
+                return false;
+            }
+
             if (Identifiable.IsSlime(baitTypeId) && baitTypeId != Identifiable.Id.GOLD_SLIME &&
                 baitTypeId != Identifiable.Id.TARR_SLIME && baitTypeId != Identifiable.Id.LUCKY_SLIME)
             {
-                __result = EnumUtils.Parse<Identifiable.Id>("TARR_GORDO");
+                __result = OtherId.TARR_GORDO;
                 return false;
             }
             GetGordoIdState = true;
@@ -59,6 +63,18 @@ namespace More_Gordos.Patch
             return true;
         }
 
+        [HarmonyPatch(typeof(GordoSnare), nameof(GordoSnare.AttachBait)), HarmonyPostfix]
+        public static void AttachBait(GordoSnare __instance)
+        {
+            __instance.RemoveComponents<DestroyAfterTime>(__instance.bait);
+        }
+
+        [HarmonyPatch(typeof(GordoSnare), nameof(GordoSnare.SetModel)), HarmonyPrefix]
+        public static void SetModel(GadgetModel model)
+        {
+            if (model is SnareModel { gordoTypeId: Identifiable.Id.PUDDLE_GORDO } snareModel) snareModel.gordoTypeId = Ids.MODDED_PUDDLE_GORDO;
+        }
+
         [HarmonyPatch(typeof(LookupDirector), nameof(LookupDirector.GordoEntries), MethodType.Getter), HarmonyPostfix]
         public static void GetGordoEntries(ref IEnumerable<GameObject> __result)
         {
@@ -74,7 +90,7 @@ namespace More_Gordos.Patch
                     gameObjects.Remove(gameObject);
                 }
             }
-            gameObjects.Remove(EnumUtils.Parse<Identifiable.Id>("TARR_GORDO").GetPrefab());
+            gameObjects.Remove(OtherId.TARR_GORDO.GetPrefab());
             __result = gameObjects;
         }
     }

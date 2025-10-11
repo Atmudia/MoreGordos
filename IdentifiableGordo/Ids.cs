@@ -7,8 +7,8 @@ namespace More_Gordos.IdentifiableGordo
 	[EnumHolder]
 	internal class Ids
 	{
-		public static readonly Identifiable.Id LUCKY_COIN;
-
+		public static readonly Identifiable.Id MODDED_PUDDLE_GORDO;
+		
 		public static readonly Identifiable.Id LUCKY_GORDO;
 
 		public static readonly Identifiable.Id GLITCH_GORDO;
@@ -20,5 +20,7 @@ namespace More_Gordos.IdentifiableGordo
 		public static readonly Identifiable.Id TWINKLE_GORDO;
 
 		public static readonly Identifiable.Id SABER_GORDO;
+
+		public static readonly Identifiable.Id GLITCH_TARR_GORDO;
 	}
 }

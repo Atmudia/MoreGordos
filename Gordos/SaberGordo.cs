@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using SRML.SR;
 using SRML.Utils;
 using UnityEngine;
@@ -23,9 +22,8 @@ namespace More_Gordos.Gordos
 			Object.DestroyImmediate(meshObj.GetComponent<MeshCollider>());
 			meshObj.GetComponent<MeshFilter>().sharedMesh = Object.Instantiate(EntryPoint.assetBundle.LoadAsset<Mesh>("slime_saber_LOD2"));
 			meshObj.transform.localScale = Vector3.one;
-			meshObj.transform.localPosition = new Vector3(0f, -0.4f, 0.6f);
+			meshObj.transform.position = new Vector3(0f, -0.4f, 0.6f);
 			meshObj.GetComponent<MeshRenderer>().sharedMaterial = mat;
-
 			var face = gordo.GetComponent<GordoFaceComponents>();
 			face.happyMouth = mat;
 			face.chompOpenMouth = mat;
@@ -41,12 +39,6 @@ namespace More_Gordos.Gordos
 			ident.nativeZones = EnumUtils.GetAll<ZoneDirector.Zone>(ZoneDirector.Zone.RANCH);
 
 			var eat = gordo.GetComponent<GordoEat>();
-			var newDef = (SlimeDefinition)PrefabUtils.DeepCopyObject(eat.slimeDefinition);
-			newDef.AppearancesDefault = saberDef.AppearancesDefault;
-			newDef.Diet = saberDef.Diet;
-			newDef.IdentifiableId = gordoId;
-			newDef.name = gordoName;
-			eat.slimeDefinition = newDef;
 			eat.targetCount = 50;
 
 			var crate = Identifiable.Id.CRATE_REEF_01.GetPrefab();

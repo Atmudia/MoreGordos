@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using SRML.SR;
 using SRML.Utils;
 using UnityEngine;
@@ -39,11 +40,10 @@ namespace More_Gordos.Gordos
 			ident.nativeZones = EnumUtils.GetAll<ZoneDirector.Zone>(ZoneDirector.Zone.RANCH);
 
 			GordoEat gordoEat = gordo.GetComponent<GordoEat>();
-			SlimeDefinition slimeDefCopy = (SlimeDefinition)PrefabUtils.DeepCopyObject(gordoEat.slimeDefinition);
-			slimeDefCopy.AppearancesDefault = pinkSlimeDef.AppearancesDefault;
-			slimeDefCopy.Diet = pinkSlimeDef.Diet;
+			SlimeDefinition slimeDefCopy = (SlimeDefinition)PrefabUtils.DeepCopyObject(pinkSlimeDef);
 			slimeDefCopy.IdentifiableId = gordoId;
 			slimeDefCopy.name = gordoName;
+			slimeDefCopy.Diet.EatMap = pinkSlimeDef.Diet.EatMap.ToList();
 			gordoEat.slimeDefinition = slimeDefCopy;
 			gordoEat.targetCount = 50;
 
@@ -59,6 +59,27 @@ namespace More_Gordos.Gordos
 			smr.sharedMaterial = glitchMaterial;
 
 			LookupRegistry.RegisterGordo(gordo);
+		}
+		public static void PostLoadGlitchGordo(Identifiable.Id gordoId)
+		{
+			var eat = gordoId.GetPrefab()?.GetComponent<GordoEat>();
+			if (eat == null) return;
+
+			var diet = eat.slimeDefinition.Diet;
+			diet.RefreshEatMap(SRSingleton<GameContext>.Instance.SlimeDefinitions, eat.slimeDefinition);
+			var glitchPogo = EnumUtils.Parse("GLITCH_POGO_FRUIT", Identifiable.Id.NONE);
+			if (glitchPogo == Identifiable.Id.NONE)
+				return;
+			diet.EatMap.RemoveAll(x => x.eats == glitchPogo);
+			diet.EatMap.Add(new SlimeDiet.EatMapEntry
+			{
+				becomesId = Identifiable.Id.NONE,
+				producesId = Identifiable.Id.GLITCH_SLIME,
+				driver = SlimeEmotions.Emotion.HUNGER,
+				eats = glitchPogo,
+				isFavorite = true,
+				favoriteProductionCount = 2
+			});
 		}
 	}
 }

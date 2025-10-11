@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using HarmonyLib;
-using MonoMod.Utils;
 using More_Gordos.Gordos;
 using More_Gordos.IdentifiableGordo;
 using Secret_Style_Things.Utils;
@@ -19,11 +18,26 @@ namespace More_Gordos
 	{
 
 		public static Dictionary<Identifiable.Id, Identifiable.Id> SnareableGordos;
+		public static AssetBundle assetBundle;
+		public static AssetBundle tarrAssetBundle;
 		public static AssetBundle LoadAssetBundle(string name)
 		{
 			var manifestResourceStream = typeof(EntryPoint).Assembly.GetManifestResourceStream("More_Gordos." + name);
 			return AssetBundle.LoadFromStream(manifestResourceStream);
 		}
+
+		public static Texture2D LoadImage(string filename)
+		{
+			var a = Assembly.GetExecutingAssembly();
+			var spriteData = a.GetManifestResourceStream(a.GetName().Name + "." + filename + ".png");
+			var rawData = new byte[spriteData.Length];
+			_ = spriteData.Read(rawData, 0, rawData.Length);
+			var tex = new Texture2D(1, 1);
+			tex.LoadImage(rawData);
+			tex.filterMode = FilterMode.Bilinear;
+			return tex;
+		}
+		public static Sprite CreateSprite(Texture2D texture) => Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), 1);
 
 		public override void PreLoad()
 		{
@@ -35,7 +49,7 @@ namespace More_Gordos
 			{
 				{
 					Identifiable.Id.DEEP_BRINE_CRAFT,
-					Identifiable.Id.PUDDLE_GORDO
+					Ids.MODDED_PUDDLE_GORDO
 				},
 				{
 					Identifiable.Id.STRANGE_DIAMOND_CRAFT,
@@ -58,11 +72,13 @@ namespace More_Gordos
 					Ids.QUICKSILVER_GORDO
 				}
 			};
-
+			if (SRModLoader.IsModPresent("glitchrancher"))
+			{
+				SnareableGordos.Add(EnumUtils.Parse<Identifiable.Id>("GLITCH_POGO_FRUIT"), Ids.GLITCH_GORDO);
+			}
 			foreach (var id in EnumUtils.GetAll<Identifiable.Id>().Where(x => x.ToString().Contains("ECHO_NOTE_")))
 			{
 				SnareableGordos.Add(id, Ids.TWINKLE_GORDO);
-
 			}
 			foreach (var id in SnareableGordos.Keys)
 			{
@@ -76,6 +92,7 @@ namespace More_Gordos
 			TranslationPatcher.AddPediaTranslation("t.twinkle_gordo", "Twinkle Gordo");
 			TranslationPatcher.AddPediaTranslation("t.saber_gordo", "Saber Gordo");
 			TranslationPatcher.AddPediaTranslation("t.quicksilver_gordo", "Quicksilver Gordo");
+			TranslationPatcher.AddPediaTranslation("t.glitch_tarr_gordo", "Digitarr Gordo");
 			if (!SRModLoader.IsModPresent("tarrgordo"))
 			{
 				tarrAssetBundle = LoadAssetBundle("tarrmellow");
@@ -83,6 +100,11 @@ namespace More_Gordos
 				OtherId.TARR_GORDO = IdentifiableRegistry.CreateIdentifiableId(EnumPatcher.GetFirstFreeValue(typeof(Identifiable.Id)), "TARR_GORDO");
 				Identifiable.TARR_CLASS.Add(OtherId.TARR_GORDO);
 			}
+			else
+			{
+				OtherId.TARR_GORDO = EnumUtils.Parse<Identifiable.Id>("TARR_GORDO");
+			}
+			
 			if (SRModLoader.IsModPresent("secretstylethings"))
 			{
 				SecretStyle();
@@ -94,7 +116,7 @@ namespace More_Gordos
 			GlitchGordo.CreateGordo(Ids.GLITCH_GORDO, "gordoGlitch");
 			LuckyGordo.CreateGordo(Ids.LUCKY_GORDO, "gordoLucky");
 			FireGordo.CreateGordo(Ids.FIRE_GORDO, "gordoFire");
-			PuddleGordo.CreateGordo(Identifiable.Id.PUDDLE_GORDO, "gordoPuddle");
+			PuddleGordo.CreateGordo(Ids.MODDED_PUDDLE_GORDO, "gordoPuddle");
 			TwinkleGordo.CreateGordo(Ids.TWINKLE_GORDO, "gordoTwinkle");
 			SaberGordo.CreateGordo(Ids.SABER_GORDO, "gordoSaber");
 			QuicksilverGordo.CreateGordo(Ids.QUICKSILVER_GORDO, "gordoQuicksilver");
@@ -102,14 +124,21 @@ namespace More_Gordos
 			{
 				TarrGordo.CreateGordo(OtherId.TARR_GORDO, "gordoTarr");
 			}
+			DigiTarrGordo.CreateGordo(Ids.GLITCH_TARR_GORDO, "gordoDigiTarr");
 		}
 
 		public override void PostLoad()
 		{
+			if (SRModLoader.IsModPresent("glitchrancher"))
+			{
+				GlitchGordo.PostLoadGlitchGordo(Ids.GLITCH_GORDO);
+			}
 			if (!SRModLoader.IsModPresent("tarrgordo"))
 			{
 				TarrGordo.PostLoadTarrGordo(OtherId.TARR_GORDO);
 			}
+			DigiTarrGordo.PostLoadDigiTarrGordo(Ids.GLITCH_TARR_GORDO);
+
 		}
 
 		private static void SecretStyle()
@@ -119,7 +148,14 @@ namespace More_Gordos
 			SlimeUtils.SecretStyleData[Ids.SABER_GORDO] = new SecretStyleData(assetBundle.LoadAsset<Sprite>("iconGordoSaberExotic"));
 			SlimeUtils.SecretStyleData[Ids.QUICKSILVER_GORDO] = new SecretStyleData(assetBundle.LoadAsset<Sprite>("iconGordoQuicksilverExotic"));
 			SlimeUtils.SecretStyleData[Ids.GLITCH_GORDO] = new SecretStyleData(assetBundle.LoadAsset<Sprite>("iconGordoGlitchExotic"));
-			SlimeUtils.SecretStyleData[Identifiable.Id.PUDDLE_GORDO] = new SecretStyleData(assetBundle.LoadAsset<Sprite>("iconGordoPuddleExotic"));
+			SlimeUtils.SecretStyleData[Ids.MODDED_PUDDLE_GORDO] = new SecretStyleData(assetBundle.LoadAsset<Sprite>("iconGordoPuddleExotic"));
+			var gordoToSlime = typeof(SlimeUtils).GetField("GordoToSlime");
+			if (gordoToSlime != null)
+			{
+				var value = gordoToSlime.GetValue(null);
+				if (value is Dictionary<Identifiable.Id, Identifiable.Id> dictionary) 
+					dictionary[Ids.MODDED_PUDDLE_GORDO] = Identifiable.Id.PUDDLE_SLIME;
+			}
 			SlimeUtils.ExtraApperanceApplicators.Add(Ids.QUICKSILVER_GORDO, delegate(Transform x, SlimeAppearance y)
 			{
 				GameObject flower = x.transform.Find("Vibrating/bone_root/bone_slime/bone_core/bone_jiggle_top/bone_skin_top/Flower").gameObject;
@@ -137,7 +173,7 @@ namespace More_Gordos
 					flower.GetComponent<MeshFilter>().sharedMesh = SRObjects.Get<Mesh>("quicksilvercrest");
 					flower.transform.localScale = new Vector3(1f, 1f, 1f);
 					flower.GetComponent<MeshRenderer>().sharedMaterial = y.Structures[0].DefaultMaterials[0];
-					flower.transform.localPosition = new Vector3(0f, -1f, 1f);
+					flower.transform.position = new Vector3(0.0f, 0.0f, 1f);
 					flower.transform.localEulerAngles = new Vector3(345.9387f, 0f, 0f);
 				}
 				GordoFaceComponents component = x.GetComponent<GordoFaceComponents>();
@@ -145,7 +181,7 @@ namespace More_Gordos
 				component.happyMouth = y.Structures[0].DefaultMaterials[0];
 				component.strainMouth = y.Structures[0].DefaultMaterials[0];
 			});
-			SlimeUtils.ExtraApperanceApplicators.Add(Identifiable.Id.PUDDLE_GORDO, delegate(Transform x, SlimeAppearance y)
+			SlimeUtils.ExtraApperanceApplicators.Add(Ids.MODDED_PUDDLE_GORDO, delegate(Transform x, SlimeAppearance y)
 			{
 				GameObject flower = x.transform.Find("Vibrating/bone_root/bone_slime/bone_core/bone_jiggle_top/bone_skin_top/Flower").gameObject;
 				if (y.SaveSet == SlimeAppearance.AppearanceSaveSet.SECRET_STYLE)
@@ -218,18 +254,18 @@ namespace More_Gordos
 				{
 					earnsNTail.GetComponent<SkinnedMeshRenderer>().sharedMaterial = y.Structures[1].DefaultMaterials[0];
 					earnsNTail.GetComponent<SkinnedMeshRenderer>().sharedMesh = SRObjects.Get<Mesh>("lucky_DLC_ears_n_tail_LOD0");
-					luckyCat.GetComponent<MeshRenderer>().sharedMaterial = y.Structures[2].DefaultMaterials[0];
+					luckyCat.GetComponent<MeshRenderer>().sharedMaterials = y.Structures[2].DefaultMaterials;
+					luckyCat.GetComponent<MeshFilter>().sharedMesh = SRObjects.Get<Mesh>("luckyexotic_coin_LOD0");
 				}
 				else
 				{
 					earnsNTail.GetComponent<SkinnedMeshRenderer>().sharedMaterial = y.Structures[1].DefaultMaterials[0];
 					earnsNTail.GetComponent<SkinnedMeshRenderer>().sharedMesh = SRObjects.Get<Mesh>("ears_n_tail_LOD0");
-					luckyCat.GetComponent<MeshRenderer>().sharedMaterial = y.Structures[2].DefaultMaterials[0];
+					luckyCat.GetComponent<MeshRenderer>().sharedMaterials = y.Structures[2].DefaultMaterials;
+					luckyCat.GetComponent<MeshFilter>().sharedMesh = SRObjects.Get<Mesh>("luckycat_coin_LOD0");
+
 				}
 			});
 		}
-		public static AssetBundle assetBundle;
-
-		public static AssetBundle tarrAssetBundle;
 	}
 }

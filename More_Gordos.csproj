@@ -56,6 +56,9 @@
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>/home/ati/.local/share/Steam/steamapps/common/Slime Rancher/SlimeRancher_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>..\..\..\..\..\..\home\ati\.local\share\Steam\steamapps\common\Slime Rancher\SlimeRancher_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
       <HintPath>/home/ati/.local/share/Steam/steamapps/common/Slime Rancher/SlimeRancher_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
@@ -67,6 +70,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Gordos\DigiTarrGordo.cs" />
     <Compile Include="Gordos\FireGordo.cs" />
     <Compile Include="Gordos\GlitchGordo.cs" />
     <Compile Include="Gordos\LuckyGordo.cs" />
@@ -82,11 +86,11 @@
     <Compile Include="Patch\Patch_DestroyAndShockOnTouching.cs" />
     <Compile Include="Patch\Patch_DamagePlayerOnTouch.cs" />
     <Compile Include="Patch\Patch_GordoSnare.cs" />
+    <Compile Include="Patch\Patch_MessageBundle.cs" />
     <Compile Include="Utility\SRObjects.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="modinfo.json" />
-    <EmbeddedResource Include="moregordos" />
     <EmbeddedResource Include="tarrmellow" />
   </ItemGroup>
   <ItemGroup>
@@ -94,6 +98,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
+    <EmbeddedResource Include="moregordos" />
+    <EmbeddedResource Include="iconGordoDigiTarr.png" />
     <Content Include="README.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

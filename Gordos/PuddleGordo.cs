@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using More_Gordos.Components;
 using SRML.SR;
 using SRML.Utils;
 using UnityEngine;

@@ -7,10 +7,10 @@ namespace More_Gordos.Patch
 	[HarmonyPatch(typeof(DestroyAndShockOnTouching))]
 	public class Patch_DestroyAndShockOnTouching
 	{
-		[HarmonyPatch(nameof(DestroyAndShockOnTouching.OnCollisionEnter)), HarmonyPatch]
+		[HarmonyPatch(nameof(DestroyAndShockOnTouching.OnCollisionEnter)), HarmonyPrefix]
 		public static bool OnCollisionEnter(Collision col, DestroyAndShockOnTouching __instance)
 		{
-			if (!col.gameObject.TryGetComponent(out GordoIdentifiable ident) || ident.id != Ids.QUICKSILVER_GORDO)
+			if (!col.gameObject.TryGetComponent(out GordoIdentifiable ident) || ident.id != Ids.QUICKSILVER_GORDO) 
 				return true;
 			if (__instance.destroyFX)
 			{

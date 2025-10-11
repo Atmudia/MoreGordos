@@ -1,4 +1,5 @@
 using HarmonyLib;
+using More_Gordos.IdentifiableGordo;
 using UnityEngine;
 
 namespace More_Gordos.Components
@@ -12,7 +13,7 @@ namespace More_Gordos.Components
         public static bool MaybeEat(GordoEat __instance, ref bool __result, Collider col)
         {
             var gid = __instance.GetComponent<GordoIdentifiable>();
-            if (gid == null || gid.id != Identifiable.Id.PUDDLE_GORDO)
+            if (gid == null || gid.id != Ids.MODDED_PUDDLE_GORDO)
                 return true;
 
             if (!__instance.CanEat())
@@ -44,7 +45,7 @@ namespace More_Gordos.Components
         public static bool Start(GordoEat __instance)
         {
             var gid = __instance.GetComponent<GordoIdentifiable>();
-            if (gid == null || gid.id != Identifiable.Id.PUDDLE_GORDO)
+            if (gid == null || gid.id != Ids.MODDED_PUDDLE_GORDO)
                 return true;
 
             if (__instance.GetEatenCount() != -1 && __instance.GetEatenCount() >= __instance.GetTargetCount())
@@ -52,7 +53,7 @@ namespace More_Gordos.Components
 
             return false;
         }
-
+        
         [HarmonyPatch(nameof(GordoEat.GetDirectFoodGroupsMsg)), HarmonyPrefix]
         public static bool GetDirectFoodGroupsMsg(GordoEat __instance, ref string __result)
         {
@@ -60,15 +61,20 @@ namespace More_Gordos.Components
             if (gid == null)
                 return true;
 
-            if (gid.id == Identifiable.Id.PUDDLE_GORDO)
+            if (gid.id == Ids.MODDED_PUDDLE_GORDO)
             {
                 __result = "m.foodgroup.water";
                 return false;
             }
-
-            if (gid.id == IdentifiableGordo.OtherId.TARR_GORDO)
+            if (gid.id == OtherId.TARR_GORDO)
             {
                 __result = "m.foodgroup.tarr";
+                return false;
+            }
+
+            if (gid.id == Ids.GLITCH_TARR_GORDO)
+            {
+                __result = "m.foodgroup.manifold_cube";
                 return false;
             }
 

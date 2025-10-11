@@ -1,4 +1,3 @@
-using System;
 using More_Gordos.IdentifiableGordo;
 using More_Gordos.Utility;
 using SRML.SR;
@@ -45,17 +44,17 @@ namespace More_Gordos.Gordos
 				Identifiable.Id.CRATE_REEF_01.GetPrefab(),
 				Identifiable.Id.ECHO_NOTE_04.GetPrefab()
 			};
-			twinkleGordo.GetComponent<GordoRewards>().rewardOverrides = Array.Empty<GordoRewards.RewardOverride>();
-
+			twinkleGordo.GetComponent<GordoRewards>().rewardOverrides = System.Array.Empty<GordoRewards.RewardOverride>();
+			
 			LookupRegistry.RegisterGordo(twinkleGordo);
 
 			SRCallbacks.PreSaveGameLoaded += _ =>
 			{
-				var echoGordo = SRObjects.Get<EchoNoteGordo>("echoNoteGordo").gordo.gameObject;
-				var sourceRenderer = echoGordo.GetComponentInChildren<SkinnedMeshRenderer>();
-
+				var echoNoteGordo = SRObjects.Get<EchoNoteGordo>("echoNoteGordo");
+				var sourceRenderer = echoNoteGordo.gordo.GetComponentInChildren<SkinnedMeshRenderer>();
 				var targetGordo = Ids.TWINKLE_GORDO.GetPrefab();
-				var portal = echoGordo.transform.parent.Find("TwinkleSlime Portal")?.gameObject.Instantiate(targetGordo.transform);
+				var portal = echoNoteGordo.ring.gameObject.Instantiate(targetGordo.transform);
+				
 				if (portal != null)
 				{
 					portal.SetActive(true);
@@ -71,10 +70,7 @@ namespace More_Gordos.Gordos
 				var slimeRend = slimeObj?.GetComponent<SkinnedMeshRenderer>();
 				if (slimeRend != null)
 				{
-					slimeRend.sharedMaterial = newMat;
 					slimeRend.material = newMat;
-					slimeRend.sharedMaterials = new[] { newMat };
-					slimeRend.materials = new[] { newMat };
 					slimeRend.sharedMesh = sourceRenderer.sharedMesh;
 				}
 			};
