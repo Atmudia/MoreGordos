@@ -43,6 +43,7 @@ namespace More_Gordos.Gordos
 			SlimeDefinition slimeDefCopy = (SlimeDefinition)PrefabUtils.DeepCopyObject(pinkSlimeDef);
 			slimeDefCopy.IdentifiableId = gordoId;
 			slimeDefCopy.name = gordoName;
+			slimeDefCopy.Name = gordoName;
 			slimeDefCopy.Diet.EatMap = pinkSlimeDef.Diet.EatMap.ToList();
 			gordoEat.slimeDefinition = slimeDefCopy;
 			gordoEat.targetCount = 50;
