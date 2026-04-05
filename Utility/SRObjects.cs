@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -5,30 +8,22 @@ namespace More_Gordos.Utility
 {
 	public static class SRObjects
 	{
+		private static readonly Dictionary<Type, Object[]> cache = new Dictionary<Type, Object[]>();
+ 
 		public static T Get<T>(string name) where T : Object
 		{
-			foreach (T t in Resources.FindObjectsOfTypeAll<T>())
+			Type selected = typeof(T);
+			if (!cache.ContainsKey(selected))
+				cache.Add(selected, Resources.FindObjectsOfTypeAll<T>());
+ 
+			T found = (T)cache[selected].FirstOrDefault(x => x && x.name == name);
+			if (found == null)
 			{
-				bool flag = t.name.Equals(name);
-				if (flag)
-				{
-					return t;
-				}
+				cache[selected] = Resources.FindObjectsOfTypeAll<T>();
+				found = (T)cache[selected].FirstOrDefault(x => x && x.name == name);
 			}
-			return null;
-		}
-
-		public static T GetInst<T>(string name) where T : Object
-		{
-			foreach (T t in Resources.FindObjectsOfTypeAll<T>())
-			{
-				bool flag = t.name.Equals(name);
-				if (flag)
-				{
-					return Object.Instantiate<T>(t);
-				}
-			}
-			return null;
+ 
+			return found;
 		}
 	}
 }

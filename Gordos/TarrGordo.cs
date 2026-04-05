@@ -15,6 +15,8 @@ namespace More_Gordos.Gordos
 			var tarr = Identifiable.Id.TARR_SLIME.GetPrefab();
 
 			var slimeDef = (SlimeDefinition)PrefabUtils.DeepCopyObject(Identifiable.Id.TARR_SLIME.GetSlimeDefinition());
+			slimeDef.name = gordoName;
+			slimeDef.Name = gordoName;
 			var mat = slimeDef.AppearancesDefault[0].Structures[1].DefaultMaterials[0];
 
 			var eyeComp = tarr.GetComponent<SlimeEyeComponents>();

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using More_Gordos.IdentifiableGordo;
 using SRML.SR;
 using SRML.Utils;
@@ -17,6 +18,8 @@ namespace More_Gordos.Gordos
 			{
 				Identifiable.Id.MANIFOLD_CUBE_CRAFT
 			};
+			slimeDef.Name = gordoName;
+			slimeDef.name = gordoName;
 			slimeDef.Diet.MajorFoodGroups = Array.Empty<SlimeEat.FoodGroup>();
 			var mat = slimeDef.AppearancesDefault[0].Structures[1].DefaultMaterials[0];
 
@@ -38,12 +41,14 @@ namespace More_Gordos.Gordos
 			marker.name = "GordoTarrMarker";
 			marker.GetComponent<Image>().sprite = digitarrGordoIcon;
 			gordo.GetComponent<GordoDisplayOnMap>().markerPrefab = marker.GetComponent<MapMarker>();
+			
+			GameObject cratePrefab = Identifiable.Id.CRATE_MOSS_01.GetPrefab();
+			List<GameObject> rewards = new() { cratePrefab, cratePrefab, cratePrefab };
 
-			var reward = Identifiable.Id.GLITCH_TARR_SLIME.GetPrefab();
-			var rewards = gordo.GetComponent<GordoRewards>();
-			rewards.rewardPrefabs = new[] { reward, reward, reward };
-			rewards.slimePrefab = reward;
-			rewards.rewardOverrides = Array.Empty<GordoRewards.RewardOverride>();
+			GordoRewards rewardsComp = gordo.GetComponent<GordoRewards>();
+			rewardsComp.rewardPrefabs = rewards.ToArray();
+			rewardsComp.slimePrefab = Identifiable.Id.GLITCH_TARR_SLIME.GetPrefab();
+			rewardsComp.rewardOverrides = Array.Empty<GordoRewards.RewardOverride>();
 
 			LookupRegistry.RegisterGordo(gordo);
 		}

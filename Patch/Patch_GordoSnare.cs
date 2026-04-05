@@ -91,6 +91,7 @@ namespace More_Gordos.Patch
                 }
             }
             gameObjects.Remove(OtherId.TARR_GORDO.GetPrefab());
+            gameObjects.Remove(Ids.GLITCH_TARR_GORDO.GetPrefab());
             __result = gameObjects;
         }
     }

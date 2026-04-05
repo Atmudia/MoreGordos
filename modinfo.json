@@ -3,7 +3,7 @@
   "name": "More Gordos",
   "author": "Atmudia",
   "description": "More Gordos adds a Lucky Gordo, Glitch Gordo, Puddle Gordo, Fire Gordo, Twinkle Gordo, Saber Gordo, Tarr Gordo, Quicksilver Gordo, Digitarr Gordo",
-  "version":  "4.1.0",
+  "version":  "4.2.0",
   "load_before": [
     "secretstylethings"
   ],
